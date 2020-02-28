@@ -82,6 +82,7 @@ body{
     display: block;
     margin: auto;
     cursor: pointer;
+    touch-action: auto;
 }
 .chess-row:nth-child(odd) > .chess-block:nth-child(even){
     background-color: brown;

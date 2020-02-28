@@ -143,11 +143,8 @@ function deselectBlock(obj) {
     });
     $(obj).data("selected", "no");
 }
-// document.getElementById("chess-board").addEventListener("click", function (e) {
-//     // console.log("clicked");
-// })
-function startAMove(e)
-{
+document.getElementById("chess-board").addEventListener("click", function (e) {
+    // console.log("clicked");
     var state = getPlayerStack();
     if (state.from != "") {
         if (e.target.classList.contains("chess-piece")) {
@@ -172,11 +169,37 @@ function startAMove(e)
             deselectBlock(chessBlock);
         }
         // ChessPiece.seeIfMove(chessBlock);
-    } //if the block doesn't contains a piece it means the player either trying to move a peice or clicking bychanc
+    } 
+})
 
-
-
-}
+// function startAMove(e)
+// {
+//     var state = getPlayerStack();
+//     if (state.from != "") {
+//         if (e.target.classList.contains("chess-piece")) {
+//             ChessPiece.seeIfMove(e.target.parentElement);
+//         }
+//         else {
+//             ChessPiece.seeIfMove(e.target);
+//         }
+//     }
+//     if (e.target.classList.contains("chess-piece")) {
+//         var chessBlock = e.target.parentElement;
+//         var chessPiece = e.target;
+//         var selected = $(chessBlock).data("selected");
+//         if (selected === "no") {
+//             var player = $(chessPiece).data("player");
+//             if (player === getPlayerTurn()) {
+//                 // console.log("matjced")
+//                 selectBlock(chessBlock);
+//             }
+//         }
+//         else if (selected === "yes") {
+//             deselectBlock(chessBlock);
+//         }
+//         // ChessPiece.seeIfMove(chessBlock);
+//     } //if the block doesn't contains a piece it means the player either trying to move a peice or clicking bychanc
+// }
 
 //fuctions 
 UIControl.setPlayerTurn();
