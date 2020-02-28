@@ -19,6 +19,7 @@ body{
    width:500px;
    margin:auto
 }
+
 .select-block{
     border:2px solid gold;
     box-shadow: 1px 1px 4px gold;
@@ -27,6 +28,7 @@ body{
     margin: auto;
     /* position: relative;
     top:100px; */
+    cursor: pointer;
     display: grid;
     width:400px;
     height:auto;
