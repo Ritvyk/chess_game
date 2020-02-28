@@ -92,6 +92,12 @@ body{
     margin: auto;
     cursor: pointer;
 }
+.chess-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 .chess-row:nth-child(odd) > .chess-block:nth-child(even){
     background-color: brown;
 }
