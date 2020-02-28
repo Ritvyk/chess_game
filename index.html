@@ -8,7 +8,7 @@
     <link rel="icon" type="image/png" href="./players/Black/king.png">
     <meta name="author" content="Ritvik | Entrepreneur | Engineer">
     <meta name="description"
-        content="An Old School Shooting Game, Designed & Developed For Self Practice in JS | Ritvik">
+        content="Chess Game Developed using advance ES6 JS concepts play as a double player.">
     <script src="https://kit.fontawesome.com/0b7eb28641.js" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="./css/bootstrap.min.css">
 <link rel="stylesheet" href="./css/jquery-ui.css">
@@ -18,21 +18,23 @@
 </head>
 
 <body>
-    <!-- <div onclick="alert();" class="p-3 bg-dark">
+    <audio id="step" src="./music/step.mp3" type="audio/mpeg"></audio>
+    <audio id="cut" src="./music/cut.mp3" type="audio/mpeg"></audio>
 
+    <!-- <div onclick="alert();" class="p-3 bg-dark">
     </div> -->
-    <div class="wrapper p-2">
-        <h4 class="text-center m-0 p-0 text-bg">Chess <i class="fas fa-chess"></i></h4>
+    <div class="wrapper p-2  mb-4">
+        <h4 class="text-center m-0 p-0 text-bg bg-dark text-white mb-3">Chess <i class="fas fa-chess"></i></h4>
         <!-- wrapper starts here -->
         <div class="board-main-container">
             <div id="winings-player1" class="winings mb-1 d-flex justify-content-start align-items-center">
 
             </div>
-            <div class="player d-flex mb-4" id="player1">
-                <p class="m-0 p-0 w-100 text-center">Player 1</p>
-                <div id="player1-box">
+             <div id="player1-box">
 
-                </div>
+            </div>
+            <div class="playermb-4" id="player1">
+                <p class="m-0 p-0 w-100 text-center">Player 1</p>
             </div>
             <div class="board-sub-container">
                 <div class="board" id="chess-board" onclick="startNewMove(event)" >
@@ -200,11 +202,12 @@
 
                 <!-- subcontainer-ends here -->
             </div>
-            <div class="player  d-flex mt-4" id="player2">
+            <div class="player mt-2" id="player2">
                 <p class="m-0 p-0 w-100 text-center">Player 2</p>
-                <div id="player2-box">
+             
+            </div>
+            <div id="player2-box">
 
-                </div>
             </div>
             <div id="winings-player2" class="winings mt-1 d-flex justify-content-start align-items-center">
 

@@ -1,5 +1,8 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
+// var rules={
+//     bishop
+// }
 var playerStack = {
     from: "",
     to: "",
@@ -83,6 +86,7 @@ class ChessPiece {
             //let the current player win a chess piece...
             this.playerWinsPiece(getPlayerTurn(),prevPiece);
             UIControl.changePlayer();
+            document.getElementById("cut").play();
         }
     }
     static moveChessPiece() {
@@ -92,6 +96,7 @@ class ChessPiece {
         control.removePiece(moves.from, chessPiece);
         control.addPiece(moves.to, chessPiece);
         setPlayerStack("moved", true);
+        document.getElementById("step").play();
     }
     static seeIfMove(block) {
         var stack = getPlayerStack();

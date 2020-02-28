@@ -64,8 +64,13 @@ body{
 }
 .player div{
     padding:10px;
-    
     /* border:solid; */
+}
+#player2-box,#player1-box{
+    padding:3px;
+    width:50px;
+    border-radius: 25px;
+    margin:auto;
 }
 .winings{
     border:solid 1px black;
@@ -88,7 +93,7 @@ body{
 .chess-row:nth-child(even) > .chess-block:nth-child(odd){
     background-color: brown;
 }
-@media screen and (max-width:400px)
+@media screen and (max-width:500px)
 {
     .board-main-container{
         width: 100%;
