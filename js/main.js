@@ -143,9 +143,9 @@ function deselectBlock(obj) {
     });
     $(obj).data("selected", "no");
 }
-document.getElementById("chess-board").addEventListener("click", function (e) {
-    // console.log("clicked");
-    var state = getPlayerStack();
+$(document).ready(function(){
+    $("#chess-board").on('click', function (e) {
+        var state = getPlayerStack();
     if (state.from != "") {
         if (e.target.classList.contains("chess-piece")) {
             ChessPiece.seeIfMove(e.target.parentElement);
@@ -170,7 +170,9 @@ document.getElementById("chess-board").addEventListener("click", function (e) {
         }
         // ChessPiece.seeIfMove(chessBlock);
     } 
-})
+    });
+}); 
+    // console.log("clicked");
 
 // function startAMove(e)
 // {
