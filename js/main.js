@@ -143,7 +143,7 @@ function deselectBlock(obj) {
     });
     $(obj).data("selected", "no");
 }
-document.getElementById("chess-board").addEventListener("touchstart", function (e) {
+document.getElementById("chess-board").addEventListener("click", function (e) {
     // console.log("clicked");
     var state = getPlayerStack();
     if (state.from != "") {

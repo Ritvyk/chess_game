@@ -14,6 +14,7 @@ body{
 }
 .board-sub-container{
     padding: 5px;
+    cursor: pointer;
 }
 .board-main-container{
    width:500px;
