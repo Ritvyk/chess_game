@@ -58,9 +58,13 @@ body{
     animation-direction:alternate;
     box-shadow: 1px 1px 5px grey;
     /* animation-delay: 1s; */
+    cursor: pointer;
 }
 .player{
     background-color: white;
+}
+.chess-row{
+    cursor: pointer;
 }
 .player div{
     padding:10px;
@@ -86,6 +90,7 @@ body{
     transform: rotate(-270deg);
     display: block;
     margin: auto;
+    cursor: pointer;
 }
 .chess-row:nth-child(odd) > .chess-block:nth-child(even){
     background-color: brown;
