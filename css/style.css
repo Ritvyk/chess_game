@@ -36,11 +36,11 @@ body{
     box-shadow: 4px 4px 10px black;
     /* transform: rotate(90deg);
     transform-origin: center center; */
-    /* animation: sa;
+    animation: sa;
     animation-duration: 1s;
     animation-delay: 2s;
-    animation-fill-mode: forwards; */
-    transform: rotate(-90deg);
+    animation-fill-mode: forwards;
+    /* transform: rotate(-90deg); */
     grid-template-columns: repeat(8,1fr);
     background-color: beige;
 }
@@ -111,7 +111,7 @@ body{
         height:40px;
     }
 }
-/* @keyframes appear{
+@keyframes appear{
     from {
         background-color: wheat;
         transform:scale(0.5) ;
@@ -127,4 +127,4 @@ body{
     to{
         transform: rotate(-90deg);
     }
-} */
+}
