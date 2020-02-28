@@ -143,8 +143,11 @@ function deselectBlock(obj) {
     });
     $(obj).data("selected", "no");
 }
-document.getElementById("chess-board").addEventListener("click", function (e) {
-    // console.log("clicked");
+// document.getElementById("chess-board").addEventListener("click", function (e) {
+//     // console.log("clicked");
+// })
+function startAMove(e)
+{
     var state = getPlayerStack();
     if (state.from != "") {
         if (e.target.classList.contains("chess-piece")) {
@@ -172,7 +175,8 @@ document.getElementById("chess-board").addEventListener("click", function (e) {
     } //if the block doesn't contains a piece it means the player either trying to move a peice or clicking bychanc
 
 
-})
+
+}
 
 //fuctions 
 UIControl.setPlayerTurn();
