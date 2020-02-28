@@ -1,8 +1,45 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
-// var rules={
-//     bishop
-// }
+var pieceAllowedMovements = [];
+function getCellId(string) {
+    var arr = string.split("-");
+    return parseInt(arr[1]);
+}
+function getValidMoves() {
+    return pieceAllowedMovements;
+}
+var rules = {
+    pawn: function (cell) {
+        var blacksMove=10;
+        var step=0;
+        var whitesMove=-10;
+        if(getPlayerTurn()==="player1")
+        {
+            step=whitesMove;
+        }
+        else{
+            step=blacksMove;
+        }
+        var cellid = getCellId(cell.id);
+        var nextRowCell = cellid +step;
+        var movesArray = [];
+        movesArray.push(nextRowCell);
+        movesArray.push(nextRowCell - 1);
+        movesArray.push(nextRowCell + 1);
+        pieceAllowedMovements = movesArray;
+    },
+    knight: function (cell) {
+
+    }, rook: function (cell) {
+
+    }, bishop: function (cell) {
+
+    }, queen: function (cell) {
+
+    }, king: function (cell) {
+
+    }
+}
 var playerStack = {
     from: "",
     to: "",
@@ -58,11 +95,10 @@ class UIControl {
 
 }
 class ChessPiece {
-    playerWinsPiece(player,piece)
-    {
-        var winningBox=document.getElementById("winings-"+player);
-        var el=document.createElement("img");
-        el.src=piece.src;
+    playerWinsPiece(player, piece) {
+        var winningBox = document.getElementById("winings-" + player);
+        var el = document.createElement("img");
+        el.src = piece.src;
         winningBox.appendChild(el);
     }
     removePiece = (cell, piece) => {
@@ -77,16 +113,15 @@ class ChessPiece {
             document.getElementById(cell).appendChild(piece);
             UIControl.changePlayer();
         }
-        else{
+        else {
             //removing the prvios price if the "To" block contains 
             var block = document.getElementById(cell);
-            var prevPiece=block.children[0];
+            var prevPiece = block.children[0];
             block.removeChild(block.children[0]);
             block.appendChild(piece);
             //let the current player win a chess piece...
-            this.playerWinsPiece(getPlayerTurn(),prevPiece);
+            this.playerWinsPiece(getPlayerTurn(), prevPiece);
             UIControl.changePlayer();
-            document.getElementById("cut").play();
         }
     }
     static moveChessPiece() {
@@ -102,16 +137,37 @@ class ChessPiece {
         var stack = getPlayerStack();
         if (stack.from != "") {
             var stack = getPlayerStack();
+            var validMove=false;
             if (block.children.length === 0) {
                 setPlayerStack("to", block.id);
-                this.moveChessPiece();
+                var moves=getValidMoves();
+                moves.forEach(cellid => {
+                    if("cell-"+cellid===block.id)
+                    {
+                        validMove=true;
+                    }
+                });
+                if(validMove)
+                {
+                    this.moveChessPiece();
+                }
             }
             else {
                 // console.log("block has a piece");
                 var playerPieceInBlock = $(block.children[0]).data("player");
                 if (playerPieceInBlock != getPlayerTurn()) {
                     setPlayerStack("to", block.id);
-                    this.moveChessPiece();
+                    var moves=getValidMoves();
+                    moves.forEach(cellid => {
+                        if("cell-"+cellid===block.id)
+                        {
+                            validMove=true;
+                        }
+                    });
+                    if(validMove)
+                    {
+                        this.moveChessPiece();
+                    }
                 }
             }
         }
@@ -148,7 +204,7 @@ function deselectBlock(obj) {
     });
     $(obj).data("selected", "no");
 }
-$(document).ready(function(){
+$(document).ready(function () {
     // // $("#chess-board").on('click', function (e) {
     // //     var state = getPlayerStack();
     // // if (state.from != "") {
@@ -176,11 +232,10 @@ $(document).ready(function(){
     // //     // ChessPiece.seeIfMove(chessBlock);
     // // } 
     // });
-}); 
-    // console.log("clicked");
+});
+// console.log("clicked");
 
-function startNewMove(e)
-{
+function startNewMove(e) {
     var state = getPlayerStack();
     if (state.from != "") {
         if (e.target.classList.contains("chess-piece")) {
@@ -198,7 +253,23 @@ function startNewMove(e)
             var player = $(chessPiece).data("player");
             if (player === getPlayerTurn()) {
                 // console.log("matjced")
+                var pieceName = chessPiece.alt;
+                if (pieceName === "pawn") {
+                    rules.pawn(chessBlock);
+                }
+                else if (pieceName === "knight") {
+                    rules.knight(chessBlock);
+                } else if (pieceName === "rook") {
+                    rules.rook(chessBlock);
+                } else if (pieceName === "bishop") {
+                    rules.bishop(chessBlock);
+                } else if (pieceName === "queen") {
+                    rules.queen(chessBlock);
+                } else if (pieceName === "king") {
+                    rules.king(chessBlock);
+                }
                 selectBlock(chessBlock);
+                // console.log(pieceAllowedMovements);
             }
         }
         else if (selected === "yes") {
