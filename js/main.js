@@ -144,8 +144,39 @@ function deselectBlock(obj) {
     $(obj).data("selected", "no");
 }
 $(document).ready(function(){
-    $("#chess-board").on('click', function (e) {
-        var state = getPlayerStack();
+    // // $("#chess-board").on('click', function (e) {
+    // //     var state = getPlayerStack();
+    // // if (state.from != "") {
+    // //     if (e.target.classList.contains("chess-piece")) {
+    // //         ChessPiece.seeIfMove(e.target.parentElement);
+    // //     }
+    // //     else {
+    // //         ChessPiece.seeIfMove(e.target);
+    // //     }
+    // // }
+    // // if (e.target.classList.contains("chess-piece")) {
+    // //     var chessBlock = e.target.parentElement;
+    // //     var chessPiece = e.target;
+    // //     var selected = $(chessBlock).data("selected");
+    // //     if (selected === "no") {
+    // //         var player = $(chessPiece).data("player");
+    // //         if (player === getPlayerTurn()) {
+    // //             // console.log("matjced")
+    // //             selectBlock(chessBlock);
+    // //         }
+    // //     }
+    // //     else if (selected === "yes") {
+    // //         deselectBlock(chessBlock);
+    // //     }
+    // //     // ChessPiece.seeIfMove(chessBlock);
+    // // } 
+    // });
+}); 
+    // console.log("clicked");
+
+function startNewMove(e)
+{
+    var state = getPlayerStack();
     if (state.from != "") {
         if (e.target.classList.contains("chess-piece")) {
             ChessPiece.seeIfMove(e.target.parentElement);
@@ -169,39 +200,8 @@ $(document).ready(function(){
             deselectBlock(chessBlock);
         }
         // ChessPiece.seeIfMove(chessBlock);
-    } 
-    });
-}); 
-    // console.log("clicked");
-
-// function startAMove(e)
-// {
-//     var state = getPlayerStack();
-//     if (state.from != "") {
-//         if (e.target.classList.contains("chess-piece")) {
-//             ChessPiece.seeIfMove(e.target.parentElement);
-//         }
-//         else {
-//             ChessPiece.seeIfMove(e.target);
-//         }
-//     }
-//     if (e.target.classList.contains("chess-piece")) {
-//         var chessBlock = e.target.parentElement;
-//         var chessPiece = e.target;
-//         var selected = $(chessBlock).data("selected");
-//         if (selected === "no") {
-//             var player = $(chessPiece).data("player");
-//             if (player === getPlayerTurn()) {
-//                 // console.log("matjced")
-//                 selectBlock(chessBlock);
-//             }
-//         }
-//         else if (selected === "yes") {
-//             deselectBlock(chessBlock);
-//         }
-//         // ChessPiece.seeIfMove(chessBlock);
-//     } //if the block doesn't contains a piece it means the player either trying to move a peice or clicking bychanc
-// }
+    } //if the block doesn't contains a piece it means the player either trying to move a peice or clicking bychanc
+}
 
 //fuctions 
 UIControl.setPlayerTurn();
