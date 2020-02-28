@@ -45,7 +45,6 @@ body{
 }
 .chess-block{
     width:100%;
-    cursor: pointer;
     height:50px;
     display: flex;
     justify-content: center;
@@ -81,8 +80,6 @@ body{
     transform: rotate(-270deg);
     display: block;
     margin: auto;
-    cursor: pointer;
-    touch-action: auto;
 }
 .chess-row:nth-child(odd) > .chess-block:nth-child(even){
     background-color: brown;
