@@ -40,7 +40,7 @@ body{
     animation-duration: 1s;
     animation-delay: 2s;
     animation-fill-mode: forwards; */
-    transform: rotate(-90deg);
+    /* transform: rotate(-90deg); */
     grid-template-columns: repeat(8,1fr);
     background-color: beige;
 }
