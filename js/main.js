@@ -1,5 +1,7 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
+const socket = io("localhost:3000");
+
 var pieceAllowedMovements = [];
 function getCellId(string) {
   var arr = string.split("-");
@@ -181,9 +183,6 @@ function setTurn(player) {
   }
 }
 class UIControl {
-  setPath(cellid) {
-    playerStack.from = cellid;
-  }
   static getChessBlocks() {
     return document.getElementsByClassName("chess-block");
   }
@@ -209,7 +208,6 @@ class ChessPiece {
     winningBox.appendChild(el);
   }
   removePiece = (cell, piece) => {
-    // //console.log("removing");
     var block = document.getElementById(cell);
     block.removeChild(piece);
     deselectBlock(block);
@@ -247,6 +245,7 @@ class ChessPiece {
       var validMove = false;
       if (block.children.length === 0) {
         setPlayerStack("to", block.id);
+        socket.emit("setPlayerStack", { key: "to", id: block.id });
         var moves = getValidMoves();
         moves.forEach((cellid) => {
           if ("cell-" + cellid === block.id) {
@@ -255,12 +254,13 @@ class ChessPiece {
         });
         if (validMove) {
           this.moveChessPiece();
+          socket.emit("moveChessPiece", getPlayerStack());
         }
       } else {
-        // //console.log("block has a piece");
         var playerPieceInBlock = $(block.children[0]).data("player");
         if (playerPieceInBlock != getPlayerTurn()) {
           setPlayerStack("to", block.id);
+          socket.emit("setPlayerStack", { key: "to", id: block.id });
           var moves = getValidMoves();
           moves.forEach((cellid) => {
             if ("cell-" + cellid === block.id) {
@@ -269,6 +269,7 @@ class ChessPiece {
           });
           if (validMove) {
             this.moveChessPiece();
+            socket.emit("moveChessPiece", getPlayerStack());
           }
         }
       }
@@ -296,9 +297,7 @@ function selectBlock(obj) {
     border: "3px solid orangered",
   });
   $(obj).data("selected", "yes");
-  var chessMove = new UIControl();
-  //passing the cell to set the from path in the player stack by verifyin gal the conditions
-  chessMove.setPath(obj.id);
+  setPlayerStack("from", obj.id);
 }
 function deselectBlock(obj) {
   $(obj).css({
@@ -306,7 +305,8 @@ function deselectBlock(obj) {
   });
   $(obj).data("selected", "no");
 }
-$(document).ready(function () {
+
+const getSetGo = () => {
   $("#chess-board").on("click", function (e) {
     var state = getPlayerStack();
     if (state.from != "") {
@@ -323,9 +323,8 @@ $(document).ready(function () {
       if (selected === "no") {
         var player = $(chessPiece).data("player");
         if (player === getPlayerTurn()) {
-          // //console.log("matjced")
           var pieceName = chessPiece.alt;
-          // //console.log(pieceName)
+
           if (pieceName === "pawn") {
             rules.pawn(chessBlock);
           } else if (pieceName === "knight") {
@@ -340,16 +339,40 @@ $(document).ready(function () {
             rules.king(chessBlock);
           }
           selectBlock(chessBlock);
+          socket.emit("selectBlock", { block: { id: chessBlock.id } });
+          socket.emit("setPlayerStack", { key: "from", id: chessBlock.id });
         }
       } else if (selected === "yes") {
         deselectBlock(chessBlock);
+        socket.emit("deselectBlock", { block: { id: chessBlock.id } });
       }
       // ChessPiece.seeIfMove(chessBlock);
     } //if the block doesn't conta
   });
+};
+
+if (socket !== null) {
+  socket.on("selectBlock:server", (data) => {
+    const checkBlock = $("#" + data.block.id);
+    selectBlock(checkBlock);
+  });
+
+  socket.on("deselectBlock:server", (data) => {
+    const checkBlock = $("#" + data.block.id);
+    deselectBlock(checkBlock);
+  });
+
+  socket.on("moveChessPiece:server", (data) => {
+    ChessPiece.moveChessPiece();
+  });
+
+  socket.on("setPlayerStack:server", (data) => {
+    setPlayerStack(data.key, data.id);
+  });
+}
+
+//starting from here
+$(document).ready(function () {
+  UIControl.setPlayerTurn();
+  getSetGo();
 });
-
-function startNewMove(e) {}
-
-//fuctions
-UIControl.setPlayerTurn();
