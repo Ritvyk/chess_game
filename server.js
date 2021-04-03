@@ -10,7 +10,7 @@ const io = require("socket.io")(server, {
   },
 });
 
-const port = 8000;
+const port = process.env.PORT || 8000;
 
 app.get("/", (req, res) => {
   res.send("Chess game server created by https://ritvyk.netlify.app");
