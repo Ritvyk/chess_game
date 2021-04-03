@@ -1,6 +1,6 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
-const socket = io("localhost:3000");
+const socket = io("localhost:3030");
 
 var pieceAllowedMovements = [];
 function getCellId(string) {

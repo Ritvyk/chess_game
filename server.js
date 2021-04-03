@@ -1,4 +1,5 @@
-const io = require("socket.io")(3000, {
+const http = require("http");
+const io = require("socket.io")(3030, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -6,6 +7,16 @@ const io = require("socket.io")(3000, {
     credentials: true,
   },
 });
+
+const port = 3000;
+
+const server = http
+  .createServer((req, res) => {
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/plain");
+    res.end("Hello World");
+  })
+  .listen(3000);
 
 io.on("connection", (socket) => {
   io.emit("connected", "server connected successfully...");
