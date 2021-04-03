@@ -1,5 +1,7 @@
-const http = require("http");
-const io = require("socket.io")(3030, {
+const express = require("express");
+const app = express();
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
   cors: {
     origin: "*",
     methods: ["GET", "POST"],
@@ -8,15 +10,15 @@ const io = require("socket.io")(3030, {
   },
 });
 
-const port = 3000;
+const port = 8000;
 
-const server = http
-  .createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader("Content-Type", "text/plain");
-    res.end("Hello World");
-  })
-  .listen(3000);
+app.get("/", (req, res) => {
+  res.send("Chess game server created by https://ritvyk.netlify.app");
+});
+
+server.listen(port, () => {
+  console.log(`Example app listening at http://localhost:${port}`);
+});
 
 io.on("connection", (socket) => {
   io.emit("connected", "server connected successfully...");
