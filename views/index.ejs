@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHESS</title>
+    <link rel="icon" type="image/png" href="players/Black/king.png">
+    <meta name="author" content="Ritvik | Entrepreneur | Engineer">
+    <meta name="description" content="Chess Game Developed using advance ES6 JS concepts play as a double player.">
+    <script src="https://kit.fontawesome.com/0b7eb28641.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+        integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Odibee+Sans|Pacifico|Yeon+Sung&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.1.1/tailwind.min.css"
+        integrity="sha512-BAK6UB671tmfzrkeH1CacTvgHQ3aLAFnT2KsigdATsc5X7+3u42tb5vjmAoDiqtxphP5dNZ3cDygivTsGEJhGw=="
+        crossorigin="anonymous" />
+    <script defer src="https://chessboard-game.herokuapp.com/socket.io/socket.io.js"></script>
+
+    <script>
+        let currentRoomId = "<%= roomName %>"
+    </script>
+    <!-- scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"
+        integrity="sha256-KM512VNnjElC30ehFwehXjx1YCHPiQkOPmqnrWtpccM=" crossorigin="anonymous"></script>
+
+
+</head>
+
+<body>
+
+    <div id="modal" class="fixed z-10 inset-0 overflow-y-auto d-none" aria-labelledby="modal-title" role="dialog"
+        aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+
+
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+
+            <div
+                class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-sm sm:w-full sm:p-6">
+                <div>
+                    <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+                        <!-- Heroicon name: outline/check -->
+                        <img src="/resources/checkmate.png" class="w-6 h-6 rounded-md shadow-md" alt="">
+                    </div>
+                    <div class="mt-3 text-center sm:mt-5">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Checkmate
+                        </h3>
+                        <div class="mt-2">
+                            <p id="who-wins" class="text-sm text-gray-500">
+
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <!-- Global notification live region, render this permanently at the end of the document -->
+    <div aria-live="assertive"
+        class="fixed inset-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-start sm:justify-end">
+
+        <div
+            class="max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden">
+            <div class="p-4">
+                <div class="flex items-start">
+
+                    <div class="ml-3 w-0 flex-1 pt-0.5">
+                        <p id="audience-name" class="text-sm font-medium text-gray-900">
+
+                        </p>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <audio id="step" src="music/step.mp3" type="audio/mpeg"></audio>
+    <audio id="cut" src="music/cut.mp3" type="audio/mpeg"></audio>
+    <div id="audience-hid" class="z-50 absolute top-0 left-0 w-full h-full opacity-75 d-none  ">
+        <div class=" w-1/3 text-center mt-2 ml-2 rounded-md p-2 bg-yellow-400 font-sm">
+            <p>You Are Watching it!</p>
+        </div>
+    </div>
+    <!-- <div onclick="alert();" class="p-3 bg-dark">
+    </div> -->
+    <div class="wrapper p-2  mb-4">
+        <h4 class="text-center m-0 p-0 text-bg bg-dark text-white mb-3">Chess <i class="fas fa-chess"></i></h4>
+
+        <!-- wrapper starts here -->
+        <div id="board-main-container" class="board-main-container rotate-parent-right">
+            <div id="winings-player1"
+                class="winings border border-gray-200 shadow-lg rounded-md flex justify-right items-center flex:shrink">
+
+            </div>
+
+
+            <div class="board-sub-container m-8 ">
+                <div class="board rotate-left" id="chess-board">
+                    <div class="row1 chess-row">
+                        <div class="chess-block">
+                            <img src="players/Black/rook.png" data-player="player2" class="chess-piece" alt="rook">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/knight.png" data-player="player2" class="chess-piece" alt="knight">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/bishop.png" data-player="player2" class="chess-piece" alt="bishop">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/king.png" data-player="player2" class="chess-piece" alt="king">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/queen.png" data-player="player2" class="chess-piece" alt="queen">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/bishop.png" data-player="player2" class="chess-piece" alt="bishop">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/knight.png" data-player="player2" class="chess-piece" alt="knight">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/rook.png" data-player="player2" class="chess-piece" alt="rook">
+                        </div>
+                    </div>
+                    <div class="row2 chess-row">
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/Black/pawn.png" class="pawn chess-piece" alt="pawn" data-player="player2">
+                        </div>
+                    </div>
+                    <div class="row3 chess-row">
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                    </div>
+                    <div class="row4 chess-row">
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                    </div>
+                    <div class="row5 chess-row">
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                    </div>
+                    <div class="row6 chess-row">
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                        <div class="chess-block"></div>
+                    </div>
+                    <div class="row7 chess-row">
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/pawn.png" class="pawn chess-piece " alt="pawn"
+                                data-player="player1">
+                        </div>
+                    </div>
+                    <div class="row8 chess-row">
+                        <div class="chess-block">
+                            <img src="players/White/rook.png" data-player="player1" class="chess-piece " alt="rook">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/knight.png" data-player="player1" class="chess-piece " alt="knight">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/bishop.png" data-player="player1" class="chess-piece " alt="bishop">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/king.png" data-player="player1" class="chess-piece " alt="king">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/queen.png" data-player="player1" class="chess-piece " alt="queen">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/bishop.png" data-player="player1" class="chess-piece " alt="bishop">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/knight.png" data-player="player1" class="chess-piece " alt="knight">
+                        </div>
+                        <div class="chess-block">
+                            <img src="players/White/rook.png" data-player="player1" class="chess-piece " alt="rook">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- subcontainer-ends here -->
+            </div>
+
+
+            <div id="winings-player2"
+                class="winings border border-gray-200 shadow-lg rounded-md flex justify-right items-center flex:shrink">
+
+            </div>
+            <!-- oard main container ends here -->
+        </div>
+        <!-- wrapper ends here -->
+
+        <!-- <div class="footer bg-dark">
+            <p class="text-center m-0 p-0 text-white">Creator : Ritvik</p>
+        </div> -->
+    </div>
+    <!--body ends here  -->
+
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="flex justify-center items-center mb-4">
+
+        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                <div id="player2-box" class="rounded-full w-4 h-4 shadow-lg">
+
+                </div>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                    Opponent
+                </dt>
+                <dd id="opponent-name" class="mt-1 text-3xl font-semibold text-gray-900">
+                    <%= opponent === undefined? "still not joined": opponent.name  %>
+                </dd>
+
+            </div>
+
+            <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                <div id="player1-box" class="rounded-full w-4 h-4 shadow-lg">
+
+                </div>
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                    Challenger
+                </dt>
+                <dd class="mt-1 text-3xl font-semibold text-gray-900">
+                    <%= creator.name  %>
+                </dd>
+
+            </div>
+            <div class="px-4 py-5 bg-white shadow rounded-lg overflow-hidden sm:p-6">
+                <dt class="text-sm font-medium text-gray-500 truncate">
+                    Audience <span class="p-2 animate-pulse rounded-full bg-green-500 ml-3"></span>
+                </dt>
+                <dd id="audience-count" class="mt-1 text-3xl font-semibold text-gray-900">
+                    <%= audience %>
+                </dd>
+            </div>
+        </dl>
+    </div>
+
+
+</body>
+
+<script defer src="js/main.js"></script>
+
+</html>

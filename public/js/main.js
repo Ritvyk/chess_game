@@ -1,6 +1,8 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
-const socket = io("https://chessboard-game.herokuapp.com");
+const socket = io("https://chessboard-game.herokuapp.com/");
+
+let you = "player1";
 
 var pieceAllowedMovements = [];
 function getCellId(string) {
@@ -203,9 +205,15 @@ class UIControl {
 class ChessPiece {
   playerWinsPiece(player, piece) {
     var winningBox = document.getElementById("winings-" + player);
+
     var el = document.createElement("img");
     el.src = piece.src;
     winningBox.appendChild(el);
+    const pieceName = piece.alt;
+    if (pieceName == "king") {
+      $("#modal").removeClass("d-none");
+      $("#who-wins").text(`${player} Wins !`);
+    }
   }
   removePiece = (cell, piece) => {
     var block = document.getElementById(cell);
@@ -245,7 +253,11 @@ class ChessPiece {
       var validMove = false;
       if (block.children.length === 0) {
         setPlayerStack("to", block.id);
-        socket.emit("setPlayerStack", { key: "to", id: block.id });
+        socket.emit("setPlayerStack", {
+          key: "to",
+          id: block.id,
+          roomId: currentRoomId,
+        });
         var moves = getValidMoves();
         moves.forEach((cellid) => {
           if ("cell-" + cellid === block.id) {
@@ -254,13 +266,20 @@ class ChessPiece {
         });
         if (validMove) {
           this.moveChessPiece();
-          socket.emit("moveChessPiece", getPlayerStack());
+          socket.emit("moveChessPiece", {
+            ...getPlayerStack(),
+            roomId: currentRoomId,
+          });
         }
       } else {
         var playerPieceInBlock = $(block.children[0]).data("player");
         if (playerPieceInBlock != getPlayerTurn()) {
           setPlayerStack("to", block.id);
-          socket.emit("setPlayerStack", { key: "to", id: block.id });
+          socket.emit("setPlayerStack", {
+            key: "to",
+            id: block.id,
+            roomId: currentRoomId,
+          });
           var moves = getValidMoves();
           moves.forEach((cellid) => {
             if ("cell-" + cellid === block.id) {
@@ -269,7 +288,10 @@ class ChessPiece {
           });
           if (validMove) {
             this.moveChessPiece();
-            socket.emit("moveChessPiece", getPlayerStack());
+            socket.emit("moveChessPiece", {
+              ...getPlayerStack(),
+              roomId: currentRoomId,
+            });
           }
         }
       }
@@ -281,6 +303,7 @@ function SetChessBoard(row, index) {
   for (var j = 1; j <= chessBlocks.length; j++) {
     chessBlocks[j - 1].id = `cell-${index}${j}`;
     $(chessBlocks[j - 1]).data("selected", "no");
+    $(chessBlocks[j - 1]).css("border", "none");
   }
 }
 var rows = document.getElementsByClassName("chess-row");
@@ -293,20 +316,42 @@ function selectBlock(obj) {
   for (var i = 0; i < chessBlocks.length; i++) {
     deselectBlock(chessBlocks[i]);
   }
+
   $(obj).css({
-    border: "3px solid orangered",
+    border: "4px dashed #d0d413",
   });
+
   $(obj).data("selected", "yes");
   setPlayerStack("from", obj.id);
 }
 function deselectBlock(obj) {
   $(obj).css({
-    border: "1px solid black",
+    border: "none",
   });
+
   $(obj).data("selected", "no");
 }
 
 const getSetGo = () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const isCreator = urlParams.get("creator");
+  const isOpponent = urlParams.get("opponent");
+  const isAudience = urlParams.get("audience");
+
+  console.log(isCreator, isOpponent, isAudience);
+  if (isOpponent) {
+    $("#chess-board").addClass("rotate-right");
+    $("#chess-board").removeClass("rotate-left");
+    you = "player2";
+
+    $("#board-main-container").removeClass("rotate-parent-right");
+    $("#board-main-container").addClass("rotate-parent-left");
+  }
+  if (isAudience) {
+    $("#audience-hid").removeClass("d-none");
+  }
+  console.log("You are", you);
+
   $("#chess-board").on("click", function (e) {
     var state = getPlayerStack();
     if (state.from != "") {
@@ -322,7 +367,7 @@ const getSetGo = () => {
       var selected = $(chessBlock).data("selected");
       if (selected === "no") {
         var player = $(chessPiece).data("player");
-        if (player === getPlayerTurn()) {
+        if (player === getPlayerTurn() && player === you) {
           var pieceName = chessPiece.alt;
 
           if (pieceName === "pawn") {
@@ -339,12 +384,22 @@ const getSetGo = () => {
             rules.king(chessBlock);
           }
           selectBlock(chessBlock);
-          socket.emit("selectBlock", { block: { id: chessBlock.id } });
-          socket.emit("setPlayerStack", { key: "from", id: chessBlock.id });
+          socket.emit("selectBlock", {
+            block: { id: chessBlock.id },
+            roomId: currentRoomId,
+          });
+          socket.emit("setPlayerStack", {
+            key: "from",
+            id: chessBlock.id,
+            roomId: currentRoomId,
+          });
         }
       } else if (selected === "yes") {
         deselectBlock(chessBlock);
-        socket.emit("deselectBlock", { block: { id: chessBlock.id } });
+        socket.emit("deselectBlock", {
+          block: { id: chessBlock.id },
+          roomId: currentRoomId,
+        });
       }
       // ChessPiece.seeIfMove(chessBlock);
     } //if the block doesn't conta
@@ -352,27 +407,57 @@ const getSetGo = () => {
 };
 
 if (socket !== null) {
+  socket.on("connected", (data) => {
+    socket.emit("abc", { name: "hello" });
+    console.log("Chess game Connected to socket witht server...");
+  });
   socket.on("selectBlock:server", (data) => {
-    const checkBlock = $("#" + data.block.id);
-    selectBlock(checkBlock);
+    if (currentRoomId === data.roomId) {
+      const checkBlock = $("#" + data.block.id);
+      selectBlock(checkBlock);
+    }
   });
 
   socket.on("deselectBlock:server", (data) => {
-    const checkBlock = $("#" + data.block.id);
-    deselectBlock(checkBlock);
+    if (currentRoomId === data.roomId) {
+      const checkBlock = $("#" + data.block.id);
+      deselectBlock(checkBlock);
+    }
   });
 
   socket.on("moveChessPiece:server", (data) => {
-    ChessPiece.moveChessPiece();
+    if (currentRoomId === data.roomId) {
+      ChessPiece.moveChessPiece();
+    }
   });
 
   socket.on("setPlayerStack:server", (data) => {
-    setPlayerStack(data.key, data.id);
+    if (currentRoomId === data.roomId) {
+      setPlayerStack(data.key, data.id);
+    }
+  });
+
+  socket.on("opponent-joined", (data) => {
+    if (data.roomId === currentRoomId) {
+      $("#opponent-name").text(data.name);
+    }
+  });
+
+  socket.on("audience-joined", (data) => {
+    console.log(data);
+    if (data.roomId === currentRoomId) {
+      $("#audience-count").text(data.audience);
+      $("#audience-name").text(`${data.name} Just joined as audience.`);
+      setTimeout(() => {
+        $("#audience-name").text("");
+      }, 2000);
+    }
   });
 }
 
 //starting from here
 $(document).ready(function () {
   UIControl.setPlayerTurn();
+
   getSetGo();
 });

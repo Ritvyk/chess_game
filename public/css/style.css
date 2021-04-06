@@ -1,0 +1,199 @@
+/* DATE : 28-02-2020 | Ritvik */
+* {
+  margin: 0px;
+  padding: 0px;
+}
+body {
+  /* font-family: 'Odibee Sans',sans-serif  ; */
+  font-family: "Yeon Sung", sans-serif;
+  /* font-family: 'Pacifico', sans-serif ; */
+}
+.text-bg {
+  font-size: 50px;
+  text-shadow: 4px 4px 4px grey;
+}
+.board-sub-container {
+  padding: 5px;
+  cursor: pointer;
+}
+.board-main-container {
+  width: 500px;
+  margin: auto;
+}
+
+.select-block {
+  border: 2px solid gold;
+  box-shadow: 1px 1px 4px gold;
+}
+.board {
+  margin: auto;
+  /* position: relative;
+    top:100px; */
+  cursor: pointer;
+  display: grid;
+  width: 400px;
+  height: auto;
+  box-shadow: 4px 4px 10px black;
+
+  grid-template-columns: repeat(8, 1fr);
+  background-color: beige;
+}
+
+.rotate-parent-left {
+  animation: rotatepleft;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.rotate-parent-right {
+  animation: rotatepright;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.rotate-left {
+  animation: rotateleft;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.rotate-right {
+  animation: rotateright;
+  animation-duration: 1s;
+  animation-delay: 2s;
+  animation-fill-mode: forwards;
+}
+
+.fix-rotate-right {
+  transform: rotate(90deg) !important;
+}
+
+.fix-rotate-left {
+  transform: rotate(-90deg) !important;
+}
+
+.chess-block {
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  /* animation: appear;
+    animation-timing-function: ease-in-out;
+    animation-duration: 1s;
+    animation-direction:alternate; */
+  box-shadow: 1px 1px 5px grey;
+  /* animation-delay: 1s; */
+  cursor: pointer;
+}
+.player {
+  background-color: white;
+}
+.chess-row {
+  cursor: pointer;
+}
+.player div {
+  padding: 10px;
+  /* border:solid; */
+}
+#player2-box,
+#player1-box {
+  padding: 3px;
+  width: 50px;
+  border-radius: 25px;
+  margin: auto;
+}
+.winings {
+  height: 30px;
+}
+.winings img {
+  width: 25px;
+  height: 25px;
+}
+.chess-piece {
+  width: 35px;
+  height: 35px;
+  transform: rotate(-270deg);
+  display: block;
+  margin: auto;
+  cursor: pointer;
+}
+.chess-block {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.chess-row:nth-child(odd) > .chess-block:nth-child(even) {
+  background-color: rgb(42, 138, 165);
+}
+
+.chess-row:nth-child(even) > .chess-block:nth-child(odd) {
+  background-color: rgb(42, 138, 165);
+}
+@media screen and (max-width: 500px) {
+  .board-main-container {
+    width: 100%;
+  }
+  .board-sub-container {
+    padding: 10px;
+  }
+  .board {
+    height: auto;
+    width: 320px;
+  }
+  .chess-block {
+    /* width: 40px; */
+    width: 40px;
+    height: 40px;
+  }
+}
+@keyframes appear {
+  from {
+    background-color: wheat;
+    transform: scale(0.5);
+  }
+  to {
+    background-color: brown;
+  }
+}
+@keyframes rotateright {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(90deg);
+  }
+}
+
+@keyframes rotatepright {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+@keyframes rotatepleft {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-180deg);
+  }
+}
+
+@keyframes rotateleft {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(-90deg);
+  }
+}
