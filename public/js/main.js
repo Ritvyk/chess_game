@@ -1,6 +1,8 @@
 //DATE : 28-02-2020 | Ritvik
 //function to set the board to a matrix by giving them index
+
 const socket = io("https://chessboard-game.herokuapp.com/");
+// const socket = io("http://localhost:8000");
 
 let you = "player1";
 
@@ -350,7 +352,6 @@ const getSetGo = () => {
   if (isAudience) {
     $("#audience-hid").removeClass("d-none");
   }
-  console.log("You are", you);
 
   $("#chess-board").on("click", function (e) {
     var state = getPlayerStack();
@@ -444,12 +445,31 @@ if (socket !== null) {
   });
 
   socket.on("audience-joined", (data) => {
-    console.log(data);
     if (data.roomId === currentRoomId) {
       $("#audience-count").text(data.audience);
+      $("#audience-alert").removeClass("d-none");
       $("#audience-name").text(`${data.name} Just joined as audience.`);
+      const d = new Date(),
+        dformat =
+          [d.getMonth() + 1, d.getDate(), d.getFullYear()].join("/") +
+          " " +
+          [d.getHours(), d.getMinutes(), d.getSeconds()].join(":");
+
+      let box = document.createElement("div");
+      box.classList =
+        "shadow-md mt-2 mb-2 p-2 rounded-md border border-gray-200 flex justify-between items-center flex-wrap";
+      box.innerHTML = `
+                <div class="text-sm text-gray-800 font-bold text-left">
+                ${data.name} <span class="ml-2 text-gray-400 font-semibold">(watching)</span>
+                </div>
+                <div class="text-xs text-gray-500 font-bold text-left p-2">
+                ${d}
+                </div>
+      `;
+      $("#audience-box").append(box);
       setTimeout(() => {
         $("#audience-name").text("");
+        $("#audience-alert").addClass("d-none");
       }, 2000);
     }
   });

@@ -111,6 +111,7 @@ app.get("/:room", (req, res) => {
     creator: creator,
     opponent: opponent,
     audience: audience.length,
+    au: audience,
     roomName: req.params.room,
     currentRoom: currentRoom,
   });
